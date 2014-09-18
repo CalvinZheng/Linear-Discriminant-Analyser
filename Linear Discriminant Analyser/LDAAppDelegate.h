@@ -11,5 +11,6 @@
 @interface LDAAppDelegate : NSObject <NSApplicationDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
+@property (retain) IBOutlet NSTextField *textView;
 
 @end

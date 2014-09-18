@@ -11,13 +11,14 @@
 		78F97FCA19C4FE47007C3C83 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 78F97FC819C4FE47007C3C83 /* InfoPlist.strings */; };
 		78F97FCC19C4FE47007C3C83 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F97FCB19C4FE47007C3C83 /* main.m */; };
 		78F97FD019C4FE47007C3C83 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 78F97FCE19C4FE47007C3C83 /* Credits.rtf */; };
-		78F97FD319C4FE47007C3C83 /* LDAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F97FD219C4FE47007C3C83 /* LDAAppDelegate.m */; };
+		78F97FD319C4FE47007C3C83 /* LDAAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 78F97FD219C4FE47007C3C83 /* LDAAppDelegate.mm */; };
 		78F97FD619C4FE47007C3C83 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 78F97FD419C4FE47007C3C83 /* MainMenu.xib */; };
 		78F97FD819C4FE47007C3C83 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78F97FD719C4FE47007C3C83 /* Images.xcassets */; };
 		78F97FDF19C4FE47007C3C83 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78F97FDE19C4FE47007C3C83 /* XCTest.framework */; };
 		78F97FE019C4FE47007C3C83 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78F97FBF19C4FE47007C3C83 /* Cocoa.framework */; };
 		78F97FE819C4FE47007C3C83 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 78F97FE619C4FE47007C3C83 /* InfoPlist.strings */; };
 		78F97FEA19C4FE47007C3C83 /* Linear_Discriminant_AnalyserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F97FE919C4FE47007C3C83 /* Linear_Discriminant_AnalyserTests.m */; };
+		78F97FF519C50267007C3C83 /* LDACaculator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 78F97FF319C50267007C3C83 /* LDACaculator.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +32,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		78AFBDBA19CB681500773DD3 /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
 		78F97FBC19C4FE47007C3C83 /* Linear Discriminant Analyser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Linear Discriminant Analyser.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78F97FBF19C4FE47007C3C83 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		78F97FC219C4FE47007C3C83 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -42,7 +44,7 @@
 		78F97FCD19C4FE47007C3C83 /* Linear Discriminant Analyser-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Linear Discriminant Analyser-Prefix.pch"; sourceTree = "<group>"; };
 		78F97FCF19C4FE47007C3C83 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		78F97FD119C4FE47007C3C83 /* LDAAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LDAAppDelegate.h; sourceTree = "<group>"; };
-		78F97FD219C4FE47007C3C83 /* LDAAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LDAAppDelegate.m; sourceTree = "<group>"; };
+		78F97FD219C4FE47007C3C83 /* LDAAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LDAAppDelegate.mm; sourceTree = "<group>"; };
 		78F97FD519C4FE47007C3C83 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		78F97FD719C4FE47007C3C83 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		78F97FDD19C4FE47007C3C83 /* Linear Discriminant AnalyserTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Linear Discriminant AnalyserTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -50,6 +52,8 @@
 		78F97FE519C4FE47007C3C83 /* Linear Discriminant AnalyserTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Linear Discriminant AnalyserTests-Info.plist"; sourceTree = "<group>"; };
 		78F97FE719C4FE47007C3C83 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		78F97FE919C4FE47007C3C83 /* Linear_Discriminant_AnalyserTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Linear_Discriminant_AnalyserTests.m; sourceTree = "<group>"; };
+		78F97FF319C50267007C3C83 /* LDACaculator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LDACaculator.cpp; sourceTree = "<group>"; };
+		78F97FF419C50267007C3C83 /* LDACaculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LDACaculator.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,11 +119,14 @@
 		78F97FC519C4FE47007C3C83 /* Linear Discriminant Analyser */ = {
 			isa = PBXGroup;
 			children = (
+				78AFBDBA19CB681500773DD3 /* matrix.h */,
 				78F97FD119C4FE47007C3C83 /* LDAAppDelegate.h */,
-				78F97FD219C4FE47007C3C83 /* LDAAppDelegate.m */,
+				78F97FD219C4FE47007C3C83 /* LDAAppDelegate.mm */,
 				78F97FD419C4FE47007C3C83 /* MainMenu.xib */,
 				78F97FD719C4FE47007C3C83 /* Images.xcassets */,
 				78F97FC619C4FE47007C3C83 /* Supporting Files */,
+				78F97FF319C50267007C3C83 /* LDACaculator.cpp */,
+				78F97FF419C50267007C3C83 /* LDACaculator.h */,
 			);
 			path = "Linear Discriminant Analyser";
 			sourceTree = "<group>";
@@ -253,7 +260,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				78F97FD319C4FE47007C3C83 /* LDAAppDelegate.m in Sources */,
+				78F97FF519C50267007C3C83 /* LDACaculator.cpp in Sources */,
+				78F97FD319C4FE47007C3C83 /* LDAAppDelegate.mm in Sources */,
 				78F97FCC19C4FE47007C3C83 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -467,6 +475,7 @@
 				78F97FEF19C4FE47007C3C83 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		78F97FF019C4FE47007C3C83 /* Build configuration list for PBXNativeTarget "Linear Discriminant AnalyserTests" */ = {
 			isa = XCConfigurationList;
@@ -475,6 +484,7 @@
 				78F97FF219C4FE47007C3C83 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
