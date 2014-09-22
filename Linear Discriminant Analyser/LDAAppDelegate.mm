@@ -8,8 +8,11 @@
 
 #import "LDAAppDelegate.h"
 #import "LDACaculator.h"
+#import <math.h>
 
-const int kFold = 4;
+const int kFold = 10;
+const int degree = 1;
+NSArray *excludeFeatures = @[];//@[@(0),@(1),@(2),@(3),@(4),@(5),@(6),@(7),@(8),@(9),@(10),@(11),@(12),@(13),@(14),@(15),@(16),@(17),@(18),@(19)];
 
 @implementation LDAAppDelegate
 
@@ -26,14 +29,25 @@ const int kFold = 4;
     NSMutableArray* testLines = [NSMutableArray array];
     srand([[NSDate date] timeIntervalSinceReferenceDate]);
     
-    double errorRate = 0;
+    double trainingErrorRate = 0, testErrorRate = 0;
     for (int crossValidate = 0; crossValidate < kFold; crossValidate++)
     {
+        self.textView.stringValue = [NSString stringWithFormat:@"%d%%", crossValidate*100/kFold];
+        
         [testLines removeAllObjects];
         [trainingLines removeAllObjects];
         for (int i = 0; i < lines.count; i++)
         {
-            if (rand()%10 == 0)//(i >= lines.count/kFold*crossValidate && i < lines.count/kFold*(crossValidate+1))
+            if ([[lines objectAtIndex:i] isEqualToString:@""])
+            {
+                continue;
+            }
+            if ([[lines objectAtIndex:i] hasSuffix:@"2"] || [[lines objectAtIndex:i] hasSuffix:@"4"])
+            {
+                continue;
+            }
+            if (i >= lines.count/kFold*crossValidate && i < lines.count/kFold*(crossValidate+1))
+//            if (i >= lines.count / 10)
             {
                 [testLines addObject:[lines objectAtIndex:i]];
             }
@@ -44,7 +58,8 @@ const int kFold = 4;
         }
         
         NSUInteger numberOfFeatures = [[trainingLines objectAtIndex:0] componentsSeparatedByString:@","].count - 1;   ///< last column is label
-//        numberOfFeatures*=3;    ///< making polynomial
+        numberOfFeatures -= excludeFeatures.count;
+        numberOfFeatures *= degree;    ///< making polynomial
         
         double** trainingDataMatrix = new double*[trainingLines.count];
         for (int i = 0; i < trainingLines.count; i++)
@@ -55,15 +70,24 @@ const int kFold = 4;
         
         for (int i = 0; i < trainingLines.count; i++)
         {
-            NSArray* numbers = [[trainingLines objectAtIndex:i] componentsSeparatedByString:@","];
-            for (int j = 0; j < numbers.count - 1; j++)
+            @autoreleasepool
             {
-                trainingDataMatrix[i][j] = [[numbers objectAtIndex:j] doubleValue];
-//                trainingDataMatrix[i][3*j+1] = [[numbers objectAtIndex:j] doubleValue]*[[numbers objectAtIndex:j] doubleValue];
-//                trainingDataMatrix[i][3*j+2] = [[numbers objectAtIndex:j] doubleValue]*[[numbers objectAtIndex:j] doubleValue]*[[numbers objectAtIndex:j] doubleValue];
+                NSArray* numbers = [[trainingLines objectAtIndex:i] componentsSeparatedByString:@","];
+                for (int j = 0, matrxJ = 0; j < numbers.count - 1; j++, matrxJ++)
+                {
+                    if ([excludeFeatures containsObject:@(j)])
+                    {
+                        matrxJ--;
+                        continue;
+                    }
+                    for (int k = 1; k <= degree; k++)
+                    {
+                        trainingDataMatrix[i][degree*matrxJ+k-1] = pow([[numbers objectAtIndex:j] doubleValue], k);
+                    }
+                }
+                trainingDataLabel[i] = [numbers.lastObject intValue] >= 3 ? 1 : 0;
+                assert(trainingDataLabel[i] == 0||trainingDataLabel[i] == 1);
             }
-            trainingDataLabel[i] = [numbers.lastObject intValue] - 1;
-            assert(trainingDataLabel[i] == 0||trainingDataLabel[i] == 1);
         }
         
         LDACaculator aCalculator;
@@ -72,33 +96,14 @@ const int kFold = 4;
         aCalculator.trainingData = trainingDataMatrix;
         aCalculator.trainingDataLabel = trainingDataLabel;
         
-        self.textView.stringValue = [self.textView.stringValue stringByAppendingFormat:@"U0        U1\n"];
-        for (int i = 0; i < aCalculator.numberOfFeatures; i++)
-        {
-            self.textView.stringValue = [self.textView.stringValue stringByAppendingFormat:
-                                         @"%.3f    %.3f\n",
-                                         aCalculator.caculateMu(0)[i],
-                                         aCalculator.caculateMu(1)[i]];
-        }
-        
-        self.textView.stringValue = [self.textView.stringValue stringByAppendingFormat:@"\nSigma Matrix\n"];
-        for (int i = 0; i < aCalculator.numberOfFeatures; i++)
-        {
-            for (int j = 0; j < aCalculator.numberOfFeatures; j++)
-            {
-                self.textView.stringValue = [self.textView.stringValue stringByAppendingFormat:@"%.3f    ", aCalculator.caculateSigma()[i][j]];
-            }
-            self.textView.stringValue = [self.textView.stringValue stringByAppendingFormat:@"\n"];
-        }
-        
-        self.textView.stringValue = [self.textView.stringValue stringByAppendingFormat:@"\nOmiga Vector\n"];
+        NSMutableString* omigaString = [NSMutableString stringWithString:@"Omiga Vector\n"];
         for (int i = 0; i < aCalculator.numberOfFeatures + 1; i++)
         {
-            self.textView.stringValue = [self.textView.stringValue stringByAppendingFormat:@"%.4f,", aCalculator.caculateOmigaVector()[i]];
+            [omigaString appendFormat:@"%.4f,", aCalculator.caculateOmigaVector()[i]];
         }
+        NSLog(@"\n%@\nTraining Error Rate\n%.5f", omigaString, aCalculator.trainingDataErrorRate());
         
-        self.textView.stringValue = [self.textView.stringValue stringByAppendingFormat:@"\nTraining Error Rate\n"];
-        self.textView.stringValue = [self.textView.stringValue stringByAppendingFormat:@"%.5f", aCalculator.trainingDataErrorRate()];
+        trainingErrorRate += aCalculator.trainingDataErrorRate();
         
         double** testDataMatrix = new double*[testLines.count];
         for (int i = 0; i < testLines.count; i++)
@@ -109,29 +114,53 @@ const int kFold = 4;
         
         for (int i = 0; i < testLines.count; i++)
         {
-            NSArray* numbers = [[testLines objectAtIndex:i] componentsSeparatedByString:@","];
-            for (int j = 0; j < numbers.count - 1; j++)
+            @autoreleasepool
             {
-                trainingDataMatrix[i][j] = [[numbers objectAtIndex:j] doubleValue];
-//                trainingDataMatrix[i][3*j+1] = [[numbers objectAtIndex:j] doubleValue]*[[numbers objectAtIndex:j] doubleValue];
-//                trainingDataMatrix[i][3*j+2] = [[numbers objectAtIndex:j] doubleValue]*[[numbers objectAtIndex:j] doubleValue]*[[numbers objectAtIndex:j] doubleValue];
+                NSArray* numbers = [[testLines objectAtIndex:i] componentsSeparatedByString:@","];
+                for (int j = 0, matrxJ = 0; j < numbers.count - 1; j++, matrxJ++)
+                {
+                    if ([excludeFeatures containsObject:@(j)])
+                    {
+                        matrxJ--;
+                        continue;
+                    }
+                    for (int k = 1; k <= degree; k++)
+                    {
+                        testDataMatrix[i][degree*matrxJ+k-1] = pow([[numbers objectAtIndex:j] doubleValue], k);
+                    }
+                }
+                testDataLabel[i] = [numbers.lastObject intValue] >= 3 ? 1 : 0;
+                assert(testDataLabel[i] == 0||testDataLabel[i] == 1);
             }
-            testDataLabel[i] = [numbers.lastObject intValue] - 1;
-            assert(testDataLabel[i] == 0||testDataLabel[i] == 1);
         }
         
-        self.textView.stringValue = [self.textView.stringValue stringByAppendingFormat:@"\nTest Data Error Rate\n"];
-        self.textView.stringValue = [self.textView.stringValue stringByAppendingFormat:
-                                     @"%.5f", aCalculator.testDataErrorRate(testDataMatrix, testDataLabel, (int)testLines.count)];
+        NSLog(@"\nTest Data Error Rate\n%.5f", aCalculator.testDataErrorRate(testDataMatrix, testDataLabel, (int)testLines.count));
         
-        errorRate += aCalculator.testDataErrorRate(testDataMatrix, testDataLabel, (int)testLines.count);
+        testErrorRate += aCalculator.testDataErrorRate(testDataMatrix, testDataLabel, (int)testLines.count);
         
-        NSLog(@"%@", self.textView.stringValue);
+        for (int i = 0; i < trainingLines.count; i++)
+        {
+            delete [] trainingDataMatrix[i];
+        }
+        delete [] trainingDataMatrix;
+        delete [] trainingDataLabel;
+        
+        for (int i = 0; i < testLines.count; i++)
+        {
+            delete [] testDataMatrix[i];
+        }
+        delete [] testDataMatrix;
+        delete [] testDataLabel;
     }
     
-    errorRate /= kFold;
+    testErrorRate /= kFold;
+    trainingErrorRate /= kFold;
     
-    NSLog(@"%d-Fold Validation Result: %.5f", kFold, errorRate);
+    self.textView.stringValue = [NSString stringWithFormat:
+                                 @"Calculation Complete!\nAverage Training Error: %.5f\n%d-Fold Validation Result: %.5f\nPlease see console for detailed results!",
+                                 trainingErrorRate, kFold, testErrorRate];
+    
+    NSLog(@"\nAverage Training Error: %.5f\n%d-Fold Validation Result: %.5f", trainingErrorRate, kFold, testErrorRate);
 
     return YES;
 }

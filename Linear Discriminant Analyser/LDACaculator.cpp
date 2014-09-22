@@ -87,6 +87,8 @@ double** LDACaculator::caculateSigma()
 {
     if (m_sigma == NULL)
     {
+        caculateMu(0);
+        caculateMu(1);
         m_sigma = new double*[numberOfFeatures];
         for (int i = 0; i < numberOfFeatures; i++)
         {
@@ -129,11 +131,13 @@ double* LDACaculator::caculateOmigaVector()
 {
     if (m_omigaVector == NULL)
     {
+        caculateSigma();
+        
         m_omigaVector = new double[numberOfFeatures+1];
         
-        matrix <double> M1(numberOfFeatures, numberOfFeatures);  // for test we create & invert this matrix
+        matrix <double> M1(numberOfFeatures, numberOfFeatures);
         int k = 0;
-        for (int i=0; i < M1.getactualsize(); i++)  // define random values for initial matrix
+        for (int i=0; i < M1.getactualsize(); i++)
             for (int j=0; j<M1.getactualsize(); j++)
             {
                 M1.setvalue(i,j,m_sigma[i][j]);
