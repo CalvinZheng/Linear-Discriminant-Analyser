@@ -12,5 +12,7 @@
 
 @property (assign) IBOutlet NSWindow *window;
 @property (retain) IBOutlet NSTextField *textView;
+@property (weak) IBOutlet NSTextField *degree;
+- (IBAction)stepped:(NSStepper *)sender;
 
 @end

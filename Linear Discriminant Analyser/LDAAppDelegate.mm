@@ -11,7 +11,6 @@
 #import <math.h>
 
 const int kFold = 10;
-const int degree = 1;
 NSArray *excludeFeatures = @[];//@[@(0),@(1),@(2),@(3),@(4),@(5),@(6),@(7),@(8),@(9),@(10),@(11),@(12),@(13),@(14),@(15),@(16),@(17),@(18),@(19)];
 
 @implementation LDAAppDelegate
@@ -29,11 +28,11 @@ NSArray *excludeFeatures = @[];//@[@(0),@(1),@(2),@(3),@(4),@(5),@(6),@(7),@(8),
     NSMutableArray* testLines = [NSMutableArray array];
     srand([[NSDate date] timeIntervalSinceReferenceDate]);
     
+    long degree = self.degree.stringValue.integerValue;
+    
     double trainingErrorRate = 0, testErrorRate = 0;
     for (int crossValidate = 0; crossValidate < kFold; crossValidate++)
     {
-        self.textView.stringValue = [NSString stringWithFormat:@"%d%%", crossValidate*100/kFold];
-        
         [testLines removeAllObjects];
         [trainingLines removeAllObjects];
         for (int i = 0; i < lines.count; i++)
@@ -169,4 +168,8 @@ NSArray *excludeFeatures = @[];//@[@(0),@(1),@(2),@(3),@(4),@(5),@(6),@(7),@(8),
 {
 }
 
+- (IBAction)stepped:(NSStepper *)sender
+{
+    self.degree.stringValue = [NSString stringWithFormat:@"%ld", [sender integerValue]];
+}
 @end
